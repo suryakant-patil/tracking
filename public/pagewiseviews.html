@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+*{
+  font-family: 'Roboto', sans-serif;
+  text-transform:capitalize;
+  margin: 0 auto;
+  text-align:left;
+}
+
+body {
+        font-family: "Roboto"!important;
+        width: 100%;
+        height: 400px;
+        position: relative;
+    }
+
+ 
+
+.slice path {
+    stroke: #fff;
+    stroke-width: 1px;
+}
+
+.textTop {
+    font-size: 12pt;
+    fill: #bbb;
+}
+
+.textBottom {
+    fill: #444;
+    font-weight: bold;
+    font-size: 32pt;
+}
+
+.top {
+    border: 1px solid #bbb;
+    color: #777;
+    padding: 5px;
+    text-decoration: none;
+}
+
+.top:hover {
+    border: 1px solid #555;
+    color: #333;
+}
+#chart{width:700px; margin:0 auto;}
+.title{text-align: center; font-size: 21px; color:#444; margin:20px 0;}
+</style>
+<body>
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<h1 class="title">Page wise views</h1>
+<div id="chart"></div>
+<script>
+fetch('./getpageviews').then(function(res){return res.json()}).then(function(res){console.log(res)
+	
+
+
+	var margin = {top: 20, right: 20, bottom: 50, left: 100},
+    width = 600,
+    height = 400,
+    r = 180,
+    inner = 180/2,
+    color= d3.scale.ordinal()
+    .range(["#1faa00", "#ff9800", "#aed581",  "#ffd54f", "#ff5722", "#d4e157"]);
+    
+data = res.map(item=>{return {label:item.Name,value:item.views}})
+
+var total = d3.sum(data, function(d) {
+    return d3.sum(d3.values(d));
+});
+
+ 
+ var svg = d3.select('#chart').append("svg:svg")
+ 			
+ var vis = svg.data([data])
+         .attr("width", width)
+         .attr("height", height)
+         .attr('viewBox',(-width / 2 ) + ' ' + (-height/2) + ' '+width +' '+height)
+         .attr('preserveAspectRatio','xMinYMin')
+
+
+var textTop = vis.append("text")
+    .attr("dy", ".35em")
+    .style("text-anchor", "middle")
+    .attr("class", "textTop")
+    .text( "TOTAL" )
+    .attr("y", -20),
+textBottom = vis.append("text")
+    .attr("dy", ".35em")
+    .style("text-anchor", "middle")
+    .attr("class", "textBottom")
+    .text(total)
+    .attr("y", 20);
+
+var arc = d3.svg.arc()
+    .innerRadius(inner)
+    .outerRadius(r);
+
+var arcOver = d3.svg.arc()
+    .innerRadius(inner + 5)
+    .outerRadius(r + 5);
+ 
+var pie = d3.layout.pie()
+    .value(function(d) { return d.value; });
+ 
+var arcs = vis.selectAll("g.slice")
+    .data(pie)
+    .enter()
+        .append("svg:g")
+            .attr("class", "slice")
+            .on("mouseover", function(d) {
+                d3.select(this).select("path").transition()
+                    .duration(200)
+                    .attr("d", arcOver)
+                
+                textTop.text(d3.select(this).datum().data.label)
+                    .attr("y", -20);
+                textBottom.text(d3.select(this).datum().data.value)
+                    .attr("y", 20);
+            })
+            .on("mouseout", function(d) {
+                d3.select(this).select("path").transition()
+                    .duration(100)
+                    .attr("d", arc);
+                
+                textTop.text( "TOTAL" )
+                    .attr("y", -20);
+                textBottom.text(total);
+            });
+
+arcs.append("svg:path")
+    .attr("fill", function(d, i) { return color(i); } )
+    .attr("d", arc);
+
+var legend = svg.append("svg")
+    .attr("class", "legend")
+    //.attr("width", r)
+    //.attr("height", r * 2)
+    .selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d, i) { return "translate(" + (r + 20) + "," + i * 20 + ")"; });
+
+legend.append("rect")
+    .attr("width", 18)
+    .attr("height", 18)
+    .style("fill", function(d, i) { return color(i); });
+
+legend.append("text")
+    .attr("x", 24)
+    .attr("y", 9)
+    .attr("dy", ".35em")
+    .text(function(d) { return d.label; });
+})
+</script>
+</body>

@@ -1,0 +1,26 @@
+{
+  "name": "tracking",
+  "version": "1.0.0",
+  "description": "Track user journey and clicks",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "suryakant@invitratech.com",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "boom": "^7.3.0",
+    "cookie-parser": "^1.4.4",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "koa": "^2.7.0",
+    "koa-cors": "0.0.16",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "morgan": "^1.9.1",
+    "mssql": "^5.0.5",
+    "serve-favicon": "^2.5.0"
+  }
+}
