@@ -1,7 +1,6 @@
 language: node_js
-node_js:
- - "node"
-env:
-- MY_VAR=test
-- NODE_ENV=TEST
-
+node_js: 
+  - "stable"
+cache:
+  directories:
+    - "node_modules"
