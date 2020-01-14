@@ -9,4 +9,5 @@ after_success:
   - chmod 600 .travis/deploy_key.pem
   - ssh-add .travis/deploy_key.pem
   - git remote add deploy git@github.com:suryakant-patil/tracking.git
+  - git push origin HEAD:master --force
   - git push deploy
